@@ -1,31 +1,31 @@
 /*
-¹¤³ÌËµÃ÷£º£¨Ö÷Òª¹¦ÄÜÒÔ¼°ÏàÓ¦ÎÄ¼ş£©
-1.²îËÙ×ªÏò£º
-£¨1£©¹ØÓÚµç»ú£º
-»ù±¾µçÆ½£ºgpio.c 
-µç»úÇı¶¯Óë×ªÏòº¯Êı£ºbsp_motor.c
-PWMÊä³ö£ºtim.c
+å·¥ç¨‹è¯´æ˜ï¼šï¼ˆä¸»è¦åŠŸèƒ½ä»¥åŠç›¸åº”æ–‡ä»¶ï¼‰
+1.å·®é€Ÿè½¬å‘ï¼š
+ï¼ˆ1ï¼‰å…³äºç”µæœºï¼š
+åŸºæœ¬ç”µå¹³ï¼šgpio.c 
+ç”µæœºé©±åŠ¨ä¸è½¬å‘å‡½æ•°ï¼šbsp_motor.c
+PWMè¾“å‡ºï¼štim.c
 
-2.Ñ­¼££º
-£¨2£©¹ØÓÚºìÍâ´«¸ĞÆ÷£º
-ÊäÈëÒı½Å£ºgpio.c
-Ñ­¼£º¯Êı£ºbsp_trail.c
+2.å¾ªè¿¹ï¼š
+ï¼ˆ2ï¼‰å…³äºçº¢å¤–ä¼ æ„Ÿå™¨ï¼š
+è¾“å…¥å¼•è„šï¼šgpio.c
+å¾ªè¿¹å‡½æ•°ï¼šbsp_trail.c
 
-3.pid±Õ»·¿ØÖÆµç»ú£º
-£¨1£©¶ÁÈ¡±àÂëÆ÷£ºtim.c
-£¨2£©×ªËÙµÄ¼ÆËã£ºstm32f1xx_it.c main.c
-£¨3£©pidµÄÊµÏÖ£ºbsp_pid.c
+3.pidé—­ç¯æ§åˆ¶ç”µæœºï¼š
+ï¼ˆ1ï¼‰è¯»å–ç¼–ç å™¨ï¼štim.c
+ï¼ˆ2ï¼‰è½¬é€Ÿçš„è®¡ç®—ï¼šstm32f1xx_it.c main.c
+ï¼ˆ3ï¼‰pidçš„å®ç°ï¼šbsp_pid.c
 
-3.À¶ÑÀÍ¨Ñ¶£º
-£¨1£©À¶ÑÀÍ¨Ñ¶£ºusart.c
+3.è“ç‰™é€šè®¯ï¼š
+ï¼ˆ1ï¼‰è“ç‰™é€šè®¯ï¼šusart.c
 
-4.mpu6050¶ÁÈ¡½Ç¶È£º£¨²Î¿¼ÕıµãÔ­×Ó£©
-£¨1£©IICÍ¨ĞÅ£ºmpuiic.c
-£¨2£©³õÊ¼»¯ÒÔ¼°½Ó¿Úº¯Êı£ºmpu6050.c
+4.mpu6050è¯»å–è§’åº¦ï¼šï¼ˆå‚è€ƒæ­£ç‚¹åŸå­ï¼‰
+ï¼ˆ1ï¼‰IICé€šä¿¡ï¼šmpuiic.c
+ï¼ˆ2ï¼‰åˆå§‹åŒ–ä»¥åŠæ¥å£å‡½æ•°ï¼šmpu6050.c
 
-5.oledÏÔÊ¾£º
-£¨1£©ÏÔÊ¾º¯Êı£ºbsp_oled.c
-£¨2£©Ä£ÄâÒı½Å³õÊ¼»¯£ºgpio.c
+5.oledæ˜¾ç¤ºï¼š
+ï¼ˆ1ï¼‰æ˜¾ç¤ºå‡½æ•°ï¼šbsp_oled.c
+ï¼ˆ2ï¼‰æ¨¡æ‹Ÿå¼•è„šåˆå§‹åŒ–ï¼šgpio.c
 */
 #include "main.h"
 #include "tim.h"
@@ -44,68 +44,66 @@ PWMÊä³ö£ºtim.c
 
 void SystemClock_Config(void);
 
-	//´®¿ÚÊÕ·¢
+	//ä¸²å£æ”¶å‘
 extern uint8_t aRxBuffer;
 extern char RxBuffer[RXBUFFERSIZE];
 extern uint8_t ble_flag;
 
-	//¼ÇÂ¼encoder_timµÄÒç³ö´ÎÊı£¬ÓÃÀ´¼ÆËã×ªËÙ
+	//è®°å½•encoder_timçš„æº¢å‡ºæ¬¡æ•°ï¼Œç”¨æ¥è®¡ç®—è½¬é€Ÿ
 int32_t Encoder_Overflow_Count_A = 0;
 int32_t Encoder_Overflow_Count_B = 0;
 
-	//»ñµÃµ±Ç°µç»úµÄ×ªÏò 0ÎªÕı¡¢1Îª¸º
+	//è·å¾—å½“å‰ç”µæœºçš„è½¬å‘ 0ä¸ºæ­£ã€1ä¸ºè´Ÿ
 int Motor_Direction_A  = 0;
 int Motor_Direction_B  = 0;
-	//»ñµÃµ±Ç°¼ÆÊıÖµ
+	//è·å¾—å½“å‰è®¡æ•°å€¼
 int32_t Capture_Count_A = 0;
 int32_t Capture_Count_B = 0;
-	//ÉÏÒ»´Î¼ÆÊıÖµ
+	//ä¸Šä¸€æ¬¡è®¡æ•°å€¼
 int32_t Last_Count_A = 0;
 int32_t Last_Count_B = 0;
-	//×ªËÙ
+	//è½¬é€Ÿ
 float Shaft_Speed_A = 0.0f;
 float Shaft_Speed_B = 0.0f;
 
-	//µç»úËÙ¶È¿ØÖÆÏà¹Ø±äÁ¿
+	//ç”µæœºé€Ÿåº¦æ§åˆ¶ç›¸å…³å˜é‡
 float target1_speed = 0;
 float target2_speed = 0;
 float now_speed = 0;
 float output_speed = 0;
 
-	//ÍÓÂİÒÇÏà¹Ø±äÁ¿£¨±¾¹¤³ÌÖĞÖ»Ğèroll¼´¿É£©
+	//é™€èºä»ªç›¸å…³å˜é‡ï¼ˆæœ¬å·¥ç¨‹ä¸­åªéœ€rollå³å¯ï¼‰
 u8 GetData=1;
-float pitch,roll,yaw; 		//Å·À­½Ç
-short aacx,aacy,aacz;			//¼ÓËÙ¶È´«¸ĞÆ÷Ô­Ê¼Êı¾İ
-short gyrox,gyroy,gyroz;	//ÍÓÂİÒÇÔ­Ê¼Êı¾İ
-short temp;								//Ôİ´æ
+float pitch,roll,yaw; 		//æ¬§æ‹‰è§’
+short aacx,aacy,aacz;			//åŠ é€Ÿåº¦ä¼ æ„Ÿå™¨åŸå§‹æ•°æ®
+short gyrox,gyroy,gyroz;	//é™€èºä»ªåŸå§‹æ•°æ®
+short temp;								//æš‚å­˜
 
 int main(void)
 {
 	HAL_Init();
   //SystemClock_Config();
-  Stm32_Clock_Init(RCC_PLL_MUL9); //ÉèÖÃÊ±ÖÓ,72M
+  Stm32_Clock_Init(RCC_PLL_MUL9); //è®¾ç½®æ—¶é’Ÿ,72M
 	MX_GPIO_Init();
 	MX_USART1_UART_Init();
   MX_TIM2_Init();
 	MX_TIM3_Init();
   MX_TIM4_Init();
-	//³õÊ¼»¯oled
+	//åˆå§‹åŒ–oled
 	OLED_Init(); 
-	//Ê¹ÄÜ¸üĞÂÖĞ¶Ï¶¨Ê±Æ÷
-	HAL_TIM_Base_Start_IT(&htim1);
-	//Ê¹ÄÜ´®¿Ú½ÓÊÕÖĞ¶Ï
+	//ä½¿èƒ½ä¸²å£æ¥æ”¶ä¸­æ–­
 	HAL_UART_Receive_IT(&huart1,(uint8_t *)&aRxBuffer,1);
-	//Ê¹ÄÜpwmÍ¨µÀ
+	//ä½¿èƒ½pwmé€šé“
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
-	//³õÊ¼»¯ÑÓÊ±º¯Êı
+	//åˆå§‹åŒ–å»¶æ—¶å‡½æ•°
 	delay_init(72);                
-	//Ê¹ÄÜ±àÂëÆ÷
+	//ä½¿èƒ½ç¼–ç å™¨
 	HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
 	HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
-	//MPU DMP³õÊ¼»¯
+	//MPU DMPåˆå§‹åŒ–
 	printf("MPU6050 TEST\r\n");
   while(mpu_dmp_init())
 	{
@@ -113,7 +111,7 @@ int main(void)
 		delay_ms(500);
 	}
   printf("MPU6050 OK\r\n");
-	//pid³õÊ¼»¯
+	//pidåˆå§‹åŒ–
 	float p = 0.2;
 	float i = 0.8;
 	float d = 0.01;
@@ -121,7 +119,7 @@ int main(void)
 	pid_inc_init(p, i, d);
 	while (1)
   {
-		Read_XUNJI_Date(); //¶ÁÑ­¼£ÏßÖµ
+		Read_XUNJI_Date(); //è¯»å¾ªè¿¹çº¿å€¼
 		if(XUNJI_1_IN==1&&XUNJI_2_IN==1&&XUNJI_3_IN==1)//111
 	  {
 			CarGo();	
